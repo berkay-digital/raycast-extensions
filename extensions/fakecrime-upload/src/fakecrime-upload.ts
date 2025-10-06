@@ -41,7 +41,11 @@ export default async function main() {
     const fileBuffer = fs.readFileSync(filePath);
     const fileName = path.basename(filePath);
     const contentType = getContentType(fileName);
-    const blob = new Blob([fileBuffer], { type: contentType });
+    // Convert Node Buffer -> real ArrayBuffer to satisfy DOM BlobPart types
+    const arrayBuffer = new ArrayBuffer(fileBuffer.byteLength);
+    const view = new Uint8Array(arrayBuffer);
+    view.set(fileBuffer);
+    const blob = new Blob([arrayBuffer], { type: contentType });
     formData.append("file", blob, fileName);
 
     const response = await fetch(uploadUrl, {
@@ -50,7 +54,7 @@ export default async function main() {
         Authorization: apiKey,
         "User-Agent": "Raycast-Upload-Image",
       },
-      body: formData as unknown as BodyInit,
+      body: formData,
     });
 
     if (!response.ok) {
