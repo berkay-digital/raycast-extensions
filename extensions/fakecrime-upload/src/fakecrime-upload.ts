@@ -1,4 +1,5 @@
 import { showHUD, Clipboard, getSelectedFinderItems, showToast, Toast, getPreferenceValues } from "@raycast/api";
+import path from "path";
 
 interface Preferences {
   apiKey: string;
@@ -37,7 +38,6 @@ export default async function main() {
     // Build multipart form data using Node 20's FormData
     const formData = new FormData();
     const fs = await import("fs");
-    const path = await import("path");
     const fileBuffer = fs.readFileSync(filePath);
     const fileName = path.basename(filePath);
     const contentType = getContentType(fileName);
@@ -78,7 +78,7 @@ export default async function main() {
       await Clipboard.copy(resultText);
     }
 
-    await showHUD("Image uploaded and URL copied");
+    await showHUD("File uploaded and URL copied");
   } catch (error) {
     const message = (error as Error).message ?? String(error);
     await Clipboard.copy(message);
@@ -95,7 +95,7 @@ async function safeReadText(response: Response): Promise<string> {
 }
 
 function getContentType(fileName: string): string {
-  const ext = fileName.toLowerCase().slice(fileName.lastIndexOf("."));
+  const ext = path.extname(fileName.toLowerCase());
   const map: Record<string, string> = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
