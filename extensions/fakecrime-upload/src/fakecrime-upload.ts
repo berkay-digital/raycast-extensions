@@ -51,7 +51,7 @@ export default async function main() {
     const response = await fetch(uploadUrl, {
       method: "POST",
       headers: {
-        Authorization: apiKey,
+        Secret: apiKey,
         "User-Agent": "Raycast-Upload-Image",
       },
       body: formData,
@@ -69,11 +69,12 @@ export default async function main() {
     }
 
     const resultText = await response.text();
-    // Try to parse for url, else copy raw
+    // Try to parse for url (supports both legacy { url } and new { data: { url } })
     try {
-      const parsed = JSON.parse(resultText) as { url?: string };
-      const url = parsed.url ?? resultText;
-      await Clipboard.copy(url);
+      const parsed = JSON.parse(resultText) as { url?: string; data?: { url?: string } };
+      const candidate = parsed.url ?? parsed.data?.url;
+      const urlToCopy = typeof candidate === "string" && candidate.length > 0 ? candidate : resultText;
+      await Clipboard.copy(urlToCopy);
     } catch {
       await Clipboard.copy(resultText);
     }
