@@ -12,8 +12,8 @@
   "commands": [
     {
       "name": "fakecrime-upload",
-      "title": "Fakecrime Upload",
-      "subtitle": "Upload an image and get a short URL in return.",
+      "title": "Upload Image",
+      "subtitle": "Fakecrime Upload",
       "description": "Upload an image to the Fakecrime server and get a short URL in return.",
       "mode": "no-view",
       "arguments": []
