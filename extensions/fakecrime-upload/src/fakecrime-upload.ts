@@ -1,10 +1,6 @@
 import { showHUD, Clipboard, getSelectedFinderItems, showToast, Toast, getPreferenceValues } from "@raycast/api";
 import path from "path";
 
-interface Preferences {
-  apiKey: string;
-}
-
 export default async function main() {
   try {
     const { apiKey } = getPreferenceValues<Preferences>();
